@@ -1,0 +1,19 @@
+[theme]
+base = "light"
+primaryColor = "#667eea"
+backgroundColor = "#f5f7fa"
+secondaryBackgroundColor = "#ffffff"
+textColor = "#2d3748"
+font = "sans serif"  # Или "Inter" если добавить fontFaces ниже
+
+# Дополнительные опции из 2025
+baseFontWeight = "400"
+codeFontSize = 14
+buttonRadius = "10px"
+dataframeHeaderBackgroundColor = "#e2e8f0"
+linkUnderline = true
+
+# Импорт шрифта Inter (опционально, если хотите custom font)
+fontFaces = [
+    { family = "Inter", src = "ur[](https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hjp-Ek-_EeA.woff2)" }
+]
