@@ -1,4 +1,7 @@
-from dotenv import os
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # List of cities
 cities = ["All", "Warszawa", "Gdańsk", "Kraków", "Poznań", "Łódź", "Katowice",
