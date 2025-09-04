@@ -36,9 +36,9 @@ configs = {
     },
     "🚙 Авто": {
         "collection_name": "vehicles",
-        "fields": ["full_name", "city", "added_by", "driver_id", "phone", "wypis_submission_date", "identification"],
-        "labels": ["Полное имя", "Город", "Добавлен кем", "ID водителя", "Телефон", "Дата подачи wypis", "Идентификация"],
-        "types": ["text", "select", "text", "text", "text", "date", "text"],
+        "fields": ["vehicle_brand", "vehicle_model", "added_by", "vehicle_number", "phone", "extract_submission_date", "extract_number", "vin_code"],
+        "labels": ["Марка", "Модель", "Добавлен кем", "Номер авто", "Телефон", "Дата подачи wypis", "Номер выписа", "VIN"],
+        "types": ["text", "select", "text", "text", "text", "date", "text", "text"],
         "display_field": "full_name",
         "search_field": "full_name",
         "has_city": True,
