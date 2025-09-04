@@ -1,10 +1,12 @@
+from dotenv import os
+
 # List of cities
 cities = ["All", "Warszawa", "Gdańsk", "Kraków", "Poznań", "Łódź", "Katowice",
           "Wrocław", "Częstochowa", "Szczecin", "Lublin", "Białystok", "Bydgoszcz"]
 
 # MongoDB URI (replace with your actual URI)
-MONGODB_URI = "mongodb+srv://fiftystasik:le5VjLrrrKpQ7gc9@cluster0.gsorenq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-DB_NAME = "leg_dep"
+MONGODB_URI = os.getenv("MONGODB_URI")
+DB_NAME = os.getenv("DB_NAME")
 
 # Configuration for each type
 configs = {
