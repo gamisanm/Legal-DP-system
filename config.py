@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+import streamlit as st
 
 load_dotenv()
 
@@ -8,8 +9,8 @@ cities = ["All", "Warszawa", "Gdańsk", "Kraków", "Poznań", "Łódź", "Katowi
           "Wrocław", "Częstochowa", "Szczecin", "Lublin", "Białystok", "Bydgoszcz"]
 
 # MongoDB URI (replace with your actual URI)
-MONGODB_URI = os.getenv("MONGODB_URI")
-DB_NAME = os.getenv("DB_NAME")
+MONGODB_URI = os.getenv("MONGODB_URI") or st.secrets["MONGODB_URI"]
+DB_NAME = os.getenv("DB_NAME") or st.secrets["DB_NAME"]
 
 # Configuration for each type
 configs = {

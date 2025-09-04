@@ -1,6 +1,5 @@
 import streamlit as st
 from config import cities, configs
-from helpers import get_paginated_data, display_card
 from views import view_data, add_data, edit_data, add_tech_data, view_tech_data
 from database import db
 
