@@ -1,6 +1,6 @@
 import streamlit as st
 from config import cities, configs
-from views import view_data, add_data, edit_data, add_tech_data, view_tech_data
+from views import view_data, add_data, add_tech_data, view_tech_data
 from database import db
 
 # Page configuration (theme управляется config.toml)
@@ -43,18 +43,15 @@ with st.sidebar:
         st.metric(f"В городе {selected_city}", city_count)
 
 # Main tabs
-tab1, tab2, tab3, tab4 = st.tabs(["👀 Просмотр", "✏️ Редактирование", "➕ Добавление", "📸 Фото техпаспортов"])
+tab1, tab2, tab3,  = st.tabs(["👀 Просмотр", "➕ Добавление", "📸 Фото техпаспортов"])
 
 with tab1:
     view_data(config, selected_city, cities)
 
 with tab2:
-    edit_data(config, selected_city, cities)
-
-with tab3:
     add_data(config, cities)
 
-with tab4:
+with tab3:
     tech_config = {
         "collection_name": "tech_passports",
         "fields": ["brand", "model", "plate_number", "vin"],

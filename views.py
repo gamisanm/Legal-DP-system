@@ -73,9 +73,6 @@ def add_data(config, cities):
                 except Exception as e:
                     st.error(f"❌ Ошибка при добавлении записи: {str(e)}")
 
-def edit_data(config, selected_city, cities):
-    st.info("Редактирование теперь доступно в профиле при просмотре. Перейдите во вкладку 'Просмотр' для выбора записи.")
-
 def add_tech_data(config):
     st.subheader("➕ Добавление фото техпаспорта")
     
