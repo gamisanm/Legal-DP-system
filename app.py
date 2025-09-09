@@ -30,16 +30,21 @@ with st.sidebar:
         help="Выберите тип данных для работы"
     )
     
-    selected_city = st.selectbox(
-        "Выберите город",
-        cities,
-        help="Фильтрация по городу (только для клиентов и авто)"
-    )
+    config = configs[selected_type]
+    
+    # Показываем выбор города только если has_city == True
+    if config["has_city"]:
+        selected_city = st.selectbox(
+            "Выберите город",
+            cities,
+            help="Фильтрация по городу (только для клиентов и авто)"
+        )
+    else:
+        selected_city = None
     
     st.divider()
     st.subheader("📊 Статистика")
     
-    config = configs[selected_type]
     collection = db[config["collection_name"]]
     
     total_count = collection.count_documents({})
