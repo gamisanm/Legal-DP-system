@@ -1,6 +1,6 @@
 from datetime import datetime
 from dateutil.parser import parse as date_parse
-import os
+from bson.binary import Binary  # Импорт для Binary (на случай редактирования)
 import streamlit as st
 from helpers import format_value, get_paginated_data
 from database import db
@@ -29,8 +29,9 @@ def display_profile(doc, config, cities=None):
             value = format_value(doc.get(field))
             st.write(f"**{label}:** {value}")
         
-        if "photo_path" in doc:
-            st.image(doc["photo_path"], caption="Фото техпаспорта")
+        if "photo" in doc:
+            # Отображаем фото напрямую из binary данных
+            st.image(doc["photo"], caption="Фото техпаспорта")
 
     if st.button("✏️ Редактировать профиль"):
         st.session_state.editing_tech_profile = True
@@ -82,13 +83,11 @@ def display_profile(doc, config, cities=None):
                             values[field] = datetime.combine(values[field], datetime.min.time())
                     
                     if uploaded_file:
-                        os.makedirs("uploads", exist_ok=True)
-                        photo_path = f"uploads/{uploaded_file.name}"
-                        with open(photo_path, "wb") as f:
-                            f.write(uploaded_file.getbuffer())
-                        values["photo_path"] = photo_path
+                        # Обновляем фото как Binary
+                        values["photo"] = Binary(uploaded_file.getvalue())
                     else:
-                        values["photo_path"] = doc.get("photo_path")
+                        # Оставляем старое фото
+                        values["photo"] = doc.get("photo")
 
                     try:
                         db[config["collection_name"]].update_one({"_id": doc["_id"]}, {"$set": values})

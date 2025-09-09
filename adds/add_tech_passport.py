@@ -1,4 +1,4 @@
-import os
+from bson.binary import Binary  # Импорт для Binary
 import streamlit as st
 from database import db
 
@@ -33,11 +33,8 @@ def add_tech_passport(config, cities):
             if empty_fields:
                 st.error(f"Пожалуйста, заполните обязательные поля: {', '.join(empty_fields)}")
             else:
-                os.makedirs("uploads", exist_ok=True)
-                photo_path = f"uploads/{uploaded_file.name}"
-                with open(photo_path, "wb") as f:
-                    f.write(uploaded_file.getbuffer())
-                values["photo_path"] = photo_path
+                # Сохраняем фото как Binary в MongoDB
+                values["photo"] = Binary(uploaded_file.getvalue())
                 
                 try:
                     db[config["collection_name"]].insert_one(values)

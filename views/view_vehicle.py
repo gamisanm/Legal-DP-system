@@ -1,37 +1,61 @@
 from datetime import datetime
 from dateutil.parser import parse as date_parse
+from bson.binary import Binary
 import streamlit as st
 from helpers import format_value, get_paginated_data
 from database import db
 
-def display_card(doc, config):
+def display_card(doc, config, columns_count=2):
     display_name = doc.get(config["display_field"], "Неизвестно")
     doc_id = str(doc['_id'])[-8:]
     
     with st.container(border=True):
         st.markdown(f"**{config['icon']} {display_name}** (ID: {doc_id})")
         
-        for field, label in zip(config["fields"], config["labels"]):
-            value = format_value(doc.get(field))
-            st.write(f"{label}: {value}")
+        # создаём колонки для полей внутри карточки
+        fields = zip(config["fields"], config["labels"], config["types"])
+        cols = st.columns(columns_count)
+        
+        for idx, (field, label, field_type) in enumerate(fields):
+            current_col = cols[idx % columns_count]
+            
+            with current_col:
+                if field_type == "file":
+                    value = "Есть фото" if doc.get(field) else "Нет фото"
+                    st.write(f"**{label}:** {value}")
+                else:
+                    value = format_value(doc.get(field))
+                    st.write(f"**{label}:** {value}")
     
     return doc_id
 
-def display_profile(doc, config, cities):
+
+def display_profile(doc, config, cities=None, columns_count=3):
     doc_id = str(doc['_id'])
     display_name = doc.get(config["display_field"], "Неизвестно")
 
     st.subheader(f"{config['icon']} Профиль: {display_name} (ID: {doc_id[-8:]})")
 
     with st.expander("📋 Текущие данные", expanded=True):
-        for field, label in zip(config["fields"], config["labels"]):
-            value = format_value(doc.get(field))
-            st.write(f"**{label}:** {value}")
+        fields = zip(config["fields"], config["labels"], config["types"])
+        cols = st.columns(columns_count)
+        for idx, (field, label, field_type) in enumerate(fields):
+            current_col = cols[idx % columns_count]
+
+            with current_col:
+                if field_type == "file":
+                    if field in doc:
+                        st.image(doc[field], caption=label, use_container_width=True)
+                    else:
+                        st.write(f"{label}: Нет файла")
+                else:
+                    value = format_value(doc.get(field))
+                    st.write(f"**{label}:** {value}")
 
     if st.button("✏️ Редактировать профиль"):
         st.session_state.editing_vehicle_profile = True
 
-    if "editing_vehicle_profile" in st.session_state and st.session_state.editing_vehicle_profile:
+    if st.session_state.get("editing_vehicle_profile"):
         st.divider()
         st.subheader("📝 Редактирование профиля")
 
@@ -53,11 +77,27 @@ def display_profile(doc, config, cities):
                             except Exception:
                                 default_value = None
                         values[field] = st.date_input(label, value=default_value)
+                    
                     elif field_type == "text":
-                        values[field] = st.text_input(label, value=format_value(default_value) if default_value != "—" else "")
-                    elif field_type == "select" and field == "city":
-                        index = cities[1:].index(default_value) if default_value in cities[1:] else 0
-                        values[field] = st.selectbox(label, cities[1:], index=index)
+                        values[field] = st.text_input(
+                            label, 
+                            value=format_value(default_value) if default_value != "—" else ""
+                        )
+                    
+                    elif field_type == "file":
+                        values[field] = st.file_uploader(label, type=["jpg", "png", "jpeg"])
+                    
+                    elif field_type == "select":
+                        options = config.get("options", {}).get(field, [])
+                        if field == "city" and cities:
+                            options = cities[1:]
+                        if options:
+                            # определяем индекс выбранного значения
+                            index = options.index(default_value) if default_value in options else 0
+                            values[field] = st.selectbox(label, options, index=index)
+                        else:
+                            st.warning(f"⚠ Для поля {label} не заданы варианты выбора")
+                            values[field] = None
 
             col1, col2 = st.columns(2)
             with col1:
@@ -68,8 +108,10 @@ def display_profile(doc, config, cities):
                 submitted = st.form_submit_button("💾 Сохранить изменения")
 
             if submitted:
-                empty_fields = [label for field, label, field_type in zip(config["fields"], config["labels"], config["types"])
-                                if field_type == "text" and not values.get(field)]
+                empty_fields = [
+                    label for field, label, field_type in zip(config["fields"], config["labels"], config["types"])
+                    if field_type in ("text", "select") and not values.get(field)
+                ]
 
                 if empty_fields:
                     st.error(f"Пожалуйста, заполните обязательные поля: {', '.join(empty_fields)}")
@@ -77,6 +119,11 @@ def display_profile(doc, config, cities):
                     for i, field in enumerate(config["fields"]):
                         if config["types"][i] == "date" and values[field]:
                             values[field] = datetime.combine(values[field], datetime.min.time())
+                        elif config["types"][i] == "file":
+                            if values[field]:
+                                values[field] = Binary(values[field].getvalue())
+                            else:
+                                values[field] = doc.get(field)
                     
                     try:
                         db[config["collection_name"]].update_one({"_id": doc["_id"]}, {"$set": values})

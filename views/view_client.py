@@ -4,17 +4,23 @@ import streamlit as st
 from helpers import format_value, get_paginated_data
 from database import db
 
-def display_card(doc, config):
+def display_card(doc, config, columns_count=2):
     display_name = doc.get(config["display_field"], "Неизвестно")
     doc_id = str(doc['_id'])[-8:]
-    
+
     with st.container(border=True):
         st.markdown(f"**{config['icon']} {display_name}** (ID: {doc_id})")
         
-        for field, label in zip(config["fields"], config["labels"]):
-            value = format_value(doc.get(field))
-            st.write(f"{label}: {value}")
-    
+        # создаём колонки для полей внутри карточки
+        fields = zip(config["fields"], config["labels"], config["types"])
+        cols = st.columns(columns_count)
+        
+        for idx, (field, label, field_type) in enumerate(fields):
+            current_col = cols[idx % columns_count]
+            with current_col:
+                value = format_value(doc.get(field))
+                st.write(f"**{label}:** {value}")
+
     return doc_id
 
 def display_profile(doc, config, cities):

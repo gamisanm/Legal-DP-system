@@ -26,9 +26,12 @@ configs = {
     },
     "👤 Клиенты": {
         "collection_name": "clients",
-        "fields": ["full_name", "city", "added_by", "driver_id", "phone", "identification", "id_submission_date", "license_date", "medical_exam_date", "psychological_exam_date"],
-        "labels": ["Полное имя", "Город", "Добавлен кем", "ID водителя", "Телефон", "Идентификация", "Дата подачи ID", "Дата лицензии", "Дата медосмотра", "Дата психоосмотра"],
-        "types": ["text", "select", "text", "text", "text", "text", "date", "date", "date", "date"],
+        "fields": ["full_name", "city", "added_by", "driver_id", "phone", "identification", "id_submission_date", "license_date", "medical_exam_date", "psychological_exam_date", "status"],
+        "labels": ["Полное имя", "Город", "Добавлен кем", "ID водителя", "Телефон", "Идентификация", "Дата подачи ID", "Дата лицензии", "Дата медосмотра", "Дата психоосмотра", "Статус"],
+        "types": ["text", "select", "text", "text", "text", "text", "date", "date", "date", "date", "select"],
+        "options": {
+            "status": ["Забрали ✅", "Готовый ✅", "Аннулирован ❌", "В офисе 🏢"]
+        },
         "display_field": "full_name",
         "search_field": "full_name",
         "has_city": True,
@@ -36,10 +39,13 @@ configs = {
     },
     "🚙 Авто": {
         "collection_name": "vehicles",
-        "fields": ["vehicle_brand", "vehicle_model", "added_by", "vehicle_number", "phone", "extract_submission_date", "extract_number", "vin_code"],
-        "labels": ["Марка", "Модель", "Добавлен кем", "Номер авто", "Телефон", "Дата подачи wypis", "Номер выписа", "VIN"],
-        "types": ["text", "text", "text", "text", "text", "date", "text", "text"],
-        "display_field": "vehicle_brand",  # Изменено, т.к. full_name не было
+        "fields": ["vehicle_brand", "vehicle_model", "added_by", "vehicle_number", "phone", "extract_submission_date", "extract_number", "vin_code", "status", "extract_photo"],
+        "labels": ["Марка", "Модель", "Добавлен кем", "Номер авто", "Телефон", "Дата подачи wypis", "Номер выписа", "VIN", "Статус", "Фото"],
+        "types": ["text", "text", "text", "text", "text", "date", "text", "text", "select", "file",],
+        "options": {
+            "status": ["Забрали ✅", "Готовый ✅", "Аннулирован ❌", "В офисе 🏢"]
+        },
+        "display_field": "vehicle_brand",
         "search_field": "vehicle_brand",
         "has_city": True,
         "icon": "🚙"
