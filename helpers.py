@@ -12,19 +12,6 @@ def format_value(value):
         return "—"
     return str(value)
 
-def display_card(doc, config):
-    display_name = doc.get(config["display_field"], "Неизвестно")
-    doc_id = str(doc['_id'])[-8:]
-    
-    with st.container(border=True):  # Native bordered container
-        st.markdown(f"**{config['icon']} {display_name}** (ID: {doc_id})")
-        
-        for field, label in zip(config["fields"], config["labels"]):
-            value = format_value(doc.get(field))
-            st.write(f"{label}: {value}")
-    
-    return doc_id
-
 def get_paginated_data(config, selected_city, context=""):
     query = {}
     if config["has_city"] and selected_city and selected_city != "All":

@@ -38,10 +38,20 @@ configs = {
         "collection_name": "vehicles",
         "fields": ["vehicle_brand", "vehicle_model", "added_by", "vehicle_number", "phone", "extract_submission_date", "extract_number", "vin_code"],
         "labels": ["Марка", "Модель", "Добавлен кем", "Номер авто", "Телефон", "Дата подачи wypis", "Номер выписа", "VIN"],
-        "types": ["text", "select", "text", "text", "text", "date", "text", "text"],
-        "display_field": "full_name",
-        "search_field": "full_name",
+        "types": ["text", "text", "text", "text", "text", "date", "text", "text"],
+        "display_field": "vehicle_brand",  # Изменено, т.к. full_name не было
+        "search_field": "vehicle_brand",
         "has_city": True,
         "icon": "🚙"
+    },
+    "📸 Техпаспорта": {
+        "collection_name": "tech_passports",
+        "fields": ["brand", "model", "plate_number", "vin"],
+        "labels": ["Марка", "Модель", "Номер авто", "VIN"],
+        "types": ["text", "text", "text", "text"],
+        "display_field": "plate_number",
+        "search_field": "plate_number",
+        "has_city": False,
+        "icon": "📸"
     }
 }
