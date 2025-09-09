@@ -2,6 +2,7 @@ from datetime import datetime
 from dateutil.parser import parse as date_parse
 from bson.binary import Binary  # Импорт для Binary (на случай редактирования)
 import streamlit as st
+import io
 from helpers import format_value, get_paginated_data
 from database import db
 
@@ -15,7 +16,25 @@ def display_card(doc, config):
         for field, label in zip(config["fields"], config["labels"]):
             value = format_value(doc.get(field))
             st.write(f"{label}: {value}")
-    
+
+        # Проверяем наличие фото техпаспорта
+        if doc.get("photo"):
+            photo_bytes = doc["photo"]
+            st.download_button(
+                label="📥 Скачать Техпаспорт",
+                data=io.BytesIO(photo_bytes),
+                file_name=f"tech_passport_{doc_id}.jpg",
+                mime="image/jpeg"
+            )
+
+            auto_data = f"{doc.get('brand', '')} {doc.get('model', '')} {doc.get('plate_number', '')}\n{doc.get('vin', '')}"
+
+            # Невидимое текстовое поле для копирования
+            st.text_area("Данные авто", value=auto_data, height=50, key=f"auto_data_{doc_id}")
+
+            # Сообщение о том, что можно выделить и скопировать
+            st.caption("📋 Скопируйте данные авто из поля выше")
+
     return doc_id
 
 def display_profile(doc, config, cities=None):
