@@ -45,7 +45,7 @@ def display_profile(doc, config, cities=None, columns_count=3):
             with current_col:
                 if field_type == "file":
                     if field in doc:
-                        st.image(doc[field], caption=label, use_container_width=True)
+                        st.image(doc[field], caption=label, width='stretch')
                     else:
                         st.write(f"{label}: Нет файла")
                 else:

@@ -32,7 +32,6 @@ with st.sidebar:
     
     config = configs[selected_type]
     
-    # Показываем выбор города только если has_city == True
     if config["has_city"]:
         selected_city = st.selectbox(
             "Выберите город",

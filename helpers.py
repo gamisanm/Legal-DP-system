@@ -14,28 +14,37 @@ def format_value(value):
 
 def get_paginated_data(config, selected_city, context=""):
     query = {}
-    if config["has_city"] and selected_city and selected_city != "All":
+
+    # Фильтр по городу, если есть
+    if config.get("has_city") and selected_city and selected_city != "All":
         query["city"] = selected_city
-    
+
     with st.container():
         search_key = f"search_{config['collection_name']}_{context}"
         search = st.text_input(
             "🔍 Поиск",
             placeholder=f"Введите имя для поиска...",
             key=search_key,
-            help="Поиск по имени с использованием регулярных выражений"
+            help="Поиск с использованием регулярных выражений"
         )
+
         if search:
-            query[config["search_field"]] = {"$regex": search, "$options": "i"}
-    
+            if isinstance(config["search_field"], list):
+                query["$or"] = [
+                    {field: {"$regex": search, "$options": "i"}}
+                    for field in config["search_field"]
+                ]
+            else:
+                query[config["search_field"]] = {"$regex": search, "$options": "i"}
+
     collection = db[config["collection_name"]]
     total_items = collection.count_documents(query)
     items_per_page = 8
     total_pages = max(1, (total_items + items_per_page - 1) // items_per_page)
-    
+
     with st.container():
         st.write(f"**Найдено:** {total_items} записей")
-        
+
         page_key = f"page_{config['collection_name']}_{context}"
         if total_pages > 1:
             page = st.select_slider(
@@ -47,13 +56,14 @@ def get_paginated_data(config, selected_city, context=""):
             )
         else:
             page = 1
-        
+
         st.write(f"**На странице:** {items_per_page}")
-    
+
     data = list(
         collection.find(query)
         .sort(config["display_field"], 1)
         .skip((page - 1) * items_per_page)
         .limit(items_per_page)
     )
+
     return data

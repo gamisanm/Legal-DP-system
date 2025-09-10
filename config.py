@@ -17,8 +17,11 @@ configs = {
     "🚗 Автопарки": {
         "collection_name": "autopark",
         "fields": ["name", "contact_number", "status", "submission_date", "wypis_number", "brand", "model", "plate_number", "vin_code"],
-        "labels": ["Название автопарка", "Номер для связи", "Статус", "Дата подачи", "Номер выписа", "Марка авто", "Модель авто", "Номер авто", "VIN CODE"],
-        "types": ["text", "text", "text", "date", "text", "text", "text", "text", "text"],
+        "labels": ["Название автопарка", "Номер для связи", "Статус", "Дата подачи", "Номер выписа", "Марка авто", "Модель авто", "Номер авто", "VIN"],
+        "types": ["text", "text", "select", "date", "text", "text", "text", "text", "text"],
+         "options": {
+            "status": ["Забрали ✅", "Готовый ✅", "Аннулирован ❌", "В офисе 🏢"]
+        },
         "display_field": "name",
         "search_field": "name",
         "has_city": False,
@@ -33,7 +36,7 @@ configs = {
             "status": ["Забрали ✅", "Готовый ✅", "Аннулирован ❌", "В офисе 🏢"]
         },
         "display_field": "full_name",
-        "search_field": "full_name",
+        "search_field": ["full_name", "phone", "driver_id"],
         "has_city": True,
         "icon": "👤"
     },
@@ -46,7 +49,7 @@ configs = {
             "status": ["Забрали ✅", "Готовый ✅", "Аннулирован ❌", "В офисе 🏢"]
         },
         "display_field": "vehicle_brand",
-        "search_field": "vehicle_brand",
+        "search_field": ["vehicle_number", "vin_code", "phone"],
         "has_city": True,
         "icon": "🚙"
     },
@@ -56,7 +59,7 @@ configs = {
         "labels": ["Марка", "Модель", "Номер авто", "VIN"],
         "types": ["text", "text", "text", "text"],
         "display_field": "plate_number",
-        "search_field": "plate_number",
+        "search_field": ["plate_number", "vin"],
         "has_city": False,
         "icon": "📸"
     }
